@@ -4,9 +4,79 @@ import threading
 import time
 import random
 
-class DockPanel (wx.Panel):
-    def __init__(self, parent, id=wx.ID_ANY, pos=(100,100), size=(400,700),style=wx.DOUBLE_BORDER):
-        wx.Panel.__init__(self, parent=parent, id = id, pos=pos, size=size, style=style)
+class createPanel_memo_write(wx.Panel):
+
+    def __init__(self, parent):
+        Title = "제목 : "
+        Memo = "내용 : "
+        wx.Panel.__init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.Size(400, 360), style=0)
+
+        bSizer4 = wx.BoxSizer(wx.VERTICAL)
+
+        bSizer4.SetMinSize(wx.Size(400, 360))
+        self.m_panel3 = wx.Panel(self, wx.ID_ANY, wx.Point(0, 0), wx.Size(400, 40), wx.TAB_TRAVERSAL)
+        bSizer6 = wx.BoxSizer(wx.VERTICAL)
+
+        self.m_textCtrl3 = wx.TextCtrl(self.m_panel3, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize,
+                                       0 | wx.NO_BORDER)
+        self.m_textCtrl3.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
+        self.m_textCtrl3.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        self.m_textCtrl3.AppendText(Title)
+        bSizer6.Add(self.m_textCtrl3, 0, wx.ALL | wx.EXPAND, 5)
+
+        self.m_panel3.SetSizer(bSizer6)
+        self.m_panel3.Layout()
+        bSizer4.Add(self.m_panel3, 1, wx.EXPAND | wx.ALL, 5)
+
+        self.m_panel4 = wx.Panel(self, wx.ID_ANY, wx.Point(0, 40), wx.Size(400, 320), wx.TAB_TRAVERSAL)
+        bSizer7 = wx.BoxSizer(wx.VERTICAL)
+
+        self.m_textCtrl4 = wx.TextCtrl(self.m_panel4, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize,
+                                       0 | wx.NO_BORDER)
+        self.m_textCtrl4.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
+        self.m_textCtrl4.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        self.m_textCtrl4.AppendText(Memo)
+        bSizer7.Add(self.m_textCtrl4, 9, wx.ALL | wx.EXPAND, 5)
+
+        self.save = wx.StaticBitmap(self.m_panel4, wx.Bitmap("C:\\Users\Public\Pictures\Sample Pictures\\save_button1.png",wx.BITMAP_TYPE_PNG), wx.Size(50, 50))
+        bSizer7.Add(self.save, 1, wx.ALL | wx.ALIGN_RIGHT, 5)
+
+        self.m_panel4.SetSizer(bSizer7)
+        self.m_panel4.Layout()
+        bSizer4.Add(self.m_panel4, 8, wx.EXPAND | wx.ALL, 5)
+
+        self.SetSizer(bSizer4)
+        self.Layout()
+        #self.save = wx.StaticBitmap(self, -1, wx.Bitmap("C:\\Users\Public\Pictures\Sample Pictures\\save_button1.png", wx.BITMAP_TYPE_PNG), pos=(340, 300), size=(50, 50))
+
+
+
+
+class createPanel_memoim(wx.Panel):
+    isOpen = False
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=wx.ID_ANY, pos=(100,210), size=(400,430),style=wx.SUNKEN_BORDER)
+        self.m_panel1 = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        self.memoim = wx.StaticBitmap(self, -1, wx.Bitmap("C:\\Users\Public\Pictures\Sample Pictures\\button4.png",wx.BITMAP_TYPE_PNG), pos=(330, 360), size=(50, 50))
+        self.memoim.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLButtonDown_memoim)
+
+    def OnMouseLButtonDown_memoim(self, event):
+        self.create_panel_memo_write = createPanel_memo_write(self)
+        self.create_panel_memo_write.SetFont(wx.Font(15, 71, 90, 90, False, wx.EmptyString))
+        createPanel_memoim.isOpen = True
+
+
+class createPanel_fashion(wx.Panel):
+    isOpen = False
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=wx.ID_ANY, pos=(100,210), size=(400,430),style=wx.SUNKEN_BORDER)
+        bSizer1 = wx.BoxSizer(wx.VERTICAL)
+        self.m_panel1 = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        self.SetBackgroundColour(wx.Colour(0, 0, 255))
+        bSizer1.Add(self.m_panel1, 1, wx.EXPAND | wx.ALL, 5)
+        self.SetSizer(bSizer1)
+        self.Layout()
+
 
 class MirrorFrame(wx.Frame):
 
@@ -22,16 +92,31 @@ class MirrorFrame(wx.Frame):
         self.timePanel = TimePanel(self)
         self.wetherPanel = WetherPanel(self)
         self.dock = Dock(self)
+        self.dock.memoim.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLButtonDown_memoim)
+        self.dock.fashion.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLButtonDown_fashion)
         #self.dock.memoim.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLButtonDown)
-        self.dock.memoim.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLButtonDown)
+        #self.dock.memoim.Bind(wx.EVT_LEFT_DOWN, self.OnMouseLButtonDown)
+        self.create_panel = None
 
 
-    def OnMouseLButtonDown(self, event):
-        create_panel = DockPanel(self)
-        create_panel.SetFont(wx.Font(15, 71, 90, 90, False, wx.EmptyString))
-        #bus_panel.SetFocusIgnoringChildren(self)
-        create_panel.SetForegroundColour(wx.Colour(0, 0, 255))
-        create_panel.SetBackgroundColour(wx.Colour(255, 0, 0))
+    def OnMouseLButtonDown_memoim(self, event):
+        if createPanel_memoim.isOpen == False:
+            self.create_panel_memoim = createPanel_memoim(self)
+            self.create_panel_memoim.SetFont(wx.Font(15, 71, 90, 90, False, wx.EmptyString))
+            createPanel_memoim.isOpen = True
+        else:
+            self.create_panel_memoim.Destroy()
+            createPanel_memoim.isOpen =False
+    def OnMouseLButtonDown_fashion(self, event):
+        if createPanel_fashion.isOpen == False:
+            self.create_panel_fashion = createPanel_fashion(self)
+            self.create_panel_fashion.SetFont(wx.Font(15, 71, 90, 90, False, wx.EmptyString))
+            #bus_panel.SetFocusIgnoringChildren(self)
+            createPanel_fashion.isOpen = True
+        else:
+            self.create_panel_fashion.Destroy()
+            createPanel_fashion.isOpen =False
+
        
         
 
@@ -81,7 +166,7 @@ class Dock(wx.Panel):
         self.text.SetForegroundColour(wx.Colour(255, 255, 255))
 
         self.memoim=wx.StaticBitmap(self, -1, wx.Bitmap("C:\\Users\Public\Pictures\Sample Pictures\\memo.png", wx.BITMAP_TYPE_PNG),pos=(0,0),size=(80,80))
-        fashion = wx.StaticBitmap(self, -1,wx.Bitmap("C:\\Users\Public\Pictures\Sample Pictures\\fashion.png", wx.BITMAP_TYPE_PNG),pos=(80,0), size=(100, 80))
+        self.fashion = wx.StaticBitmap(self, -1,wx.Bitmap("C:\\Users\Public\Pictures\Sample Pictures\\fashion.png", wx.BITMAP_TYPE_PNG),pos=(80,0), size=(100, 80))
 
 
 
